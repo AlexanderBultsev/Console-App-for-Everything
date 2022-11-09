@@ -3,31 +3,28 @@
 #include <Windows.h>
 #include <iomanip>
 #include <conio.h>
+#include <map>
 
 using namespace std;
 
-int MinReprAge = 10, // Не самые оптимальные (наверное)!
-MaxReprAge = 30,
-AverageAge = 20,
-MaxAge = 50,
-MinFoodPred = 2,
-MinFoodHerb = 20,
-GrassRecPerc = 67,
-Grass = 3000,
-CataclysmChance = 1,
-Xmax = 20,
-Ymax = 20,
-CountHerb = 3,
-CountPred = 1,
-Day = 0;
-
-vector <vector <int> > Population{
-    //   X   Y   age type
-        {Xmax / 4, Ymax / 4, 20, 0},
-        {Xmax * 3 / 4, Ymax / 4, 20, 0},
-        {Xmax / 4, Ymax * 3 / 4, 20, 0},
-        {Xmax * 3 / 4, Ymax * 3 / 4, 20, 1},
+map <string, int> Parameters{
+    {"MinReprAge", 0},
+    {"MaxReprAge", 0},
+    {"AverageAge", 0},
+    {"MaxAge", 0},
+    {"Day", 0},
+    {"MinFoodPred", 0},
+    {"MinFoodHerb", 0},
+    {"CountHerb", 0},
+    {"CountPred", 0},
+    {"GrassRecPerc", 0},
+    {"Grass", 0},
+    {"CataclysmChance", 0},
+    {"Xmax", 0},
+    {"Ymax", 0}
 };
+
+vector <vector <int> > Population;
 
 void ShowSettings() {
     system("cls");
@@ -40,9 +37,9 @@ void ShowSettings() {
 
 void print(vector <vector <int> > vec) {
     if (vec.size()) {
-        vector <vector <int>> mas(Xmax);
-        for (int i = 0; i < Xmax; i++)
-            mas[i].resize(Ymax);
+        vector <vector <int>> mas(Parameters["Xmax"]);
+        for (int i = 0; i < Parameters["Xmax"]; i++)
+            mas[i].resize(Parameters["Ymax"]);
 
         for (int i = 0; i < vec.size(); i++) {
             for (int j = 0; j < vec[i].size(); j++)
@@ -52,8 +49,8 @@ void print(vector <vector <int> > vec) {
         }
         cout << "\n";
 
-        for (int i = 0; i < Xmax; i++) {
-            for (int j = 0; j < Ymax; j++)
+        for (int i = 0; i < Parameters["Xmax"]; i++) {
+            for (int j = 0; j < Parameters["Ymax"]; j++)
                 if (mas[i][j])
                     cout << mas[i][j] - 1 << " ";
                 else
@@ -64,23 +61,23 @@ void print(vector <vector <int> > vec) {
 }
 
 void ShowParameters() {
-    cout << "Размер поля: " << Xmax << "x" << Ymax << "\n"
-        << "Минимальный репродуктивный возраст животных: " << MinReprAge << "\n"
-        << "Максимальный репродуктивный возраст животных: " << MaxReprAge << "\n"
-        << "Количество травоядных необходимое хищнику на месяц: " << MinFoodPred << "\n"
-        << "Количество травы необходимое травоядному на месяц: " << MinFoodHerb << "\n"
-        << "Восстановление травы за год: " << GrassRecPerc << "%\n"
-        << "Шанс катаклизма: " << CataclysmChance << "%\n"
-        << "Количество травы на поле: " << Grass << "\n"
-        << "Количество травоядных: " << CountHerb << "\n"
-        << "Количество хищников: " << CountPred << "\n";
+    cout << "Размер поля: " << Parameters["Xmax"] << "x" << Parameters["Ymax"] << "\n"
+        << "Минимальный репродуктивный возраст животных: " << Parameters["MinReprAge"] << "\n"
+        << "Максимальный репродуктивный возраст животных: " << Parameters["MaxReprAge"] << "\n"
+        << "Количество травоядных необходимое хищнику на месяц: " << Parameters["MinFoodPred"] << "\n"
+        << "Количество травы необходимое травоядному на месяц: " << Parameters["MinFoodHerb"] << "\n"
+        << "Восстановление травы за год: " << Parameters["GrassRecPerc"] << "%\n"
+        << "Шанс катаклизма: " << Parameters["CataclysmChance"] << "%\n"
+        << "Количество травы на поле: " << Parameters["Grass"] << "\n"
+        << "Количество травоядных: " << Parameters["CountHerb"] << "\n"
+        << "Количество хищников: " << Parameters["CountPred"] << "\n";
 }
 
 void ShowWork(vector <vector <int> > Population) {
     system("cls");
     cout << "ЭМУЛЯЦИЯ РАЗВИТИЯ ПОПУЛЯЦИЙ ЖИВОТНЫХ\n\n";
     ShowParameters();
-    cout << "\nДень с начала эмуляции: " << Day << "\n";
+    cout << "\nДень с начала эмуляции: " << Parameters["Day"] << "\n";
     print(Population);
 }
 
@@ -103,18 +100,18 @@ void StartEmulation(vector <vector <int> > Population) {
         }
 
         // завернуть в отдельную функцию
-        if (!(Day % 30)) {
-            Grass -= (MinFoodHerb * CountHerb);
-            Grass += (MinFoodHerb * CountHerb) * GrassRecPerc / 100;
-            if (CountHerb)
-                EnoughGrass = Grass / (MinFoodHerb * CountHerb);
+        if (!(Parameters["Day"] % 30)) {
+            Parameters["Grass"] -= (Parameters["MinFoodHerb"] * Parameters["CountHerb"]);
+            Parameters["Grass"] += (Parameters["MinFoodHerb"] * Parameters["CountHerb"]) * Parameters["GrassRecPerc"] / 100;
+            if (Parameters["CountHerb"])
+                EnoughGrass = Parameters["Grass"] / (Parameters["MinFoodHerb"] * Parameters["CountHerb"]);
             ShowWork(Population);
             Sleep(500);
         }
 
-        if (!(Day % 360)) {
-            if (CountPred)
-                EnoughHerbs = CountHerb / (MinFoodPred * CountPred);
+        if (!(Parameters["Day"] % 360)) {
+            if (Parameters["CountPred"])
+                EnoughHerbs = Parameters["CountHerb"] / (Parameters["MinFoodPred"] * Parameters["CountPred"]);
             for (int i = 0; i < Population.size(); i++)
                 Population[i][2]++;
         }
@@ -122,32 +119,42 @@ void StartEmulation(vector <vector <int> > Population) {
         int i = 0;
         while (i < Population.size()) {
 
-            if ((!EnoughHerbs) && (Population[i][3]) && (pow(pow(100, -MaxAge), Population[i][2]) > rand() % 100)) { // доработать формулы, а то все умирают неправильно!
-                CountPred--;
-                Population.erase(Population.begin() + i);
-                if (i >= Population.size())
+            bool UnDead = true;
+
+            if ((!EnoughHerbs) && (Population[i][3])) {
+                float p = pow(99, pow(float(Population[i][2]) / float(Parameters["MaxAge"]), 3));
+                if (p > rand() % 100) {
+                    Parameters["CountPred"]--;
+                    Population.erase(Population.begin() + i);
+                    if (i >= Population.size())
+                        UnDead = false();
                     break;
+                }
             }
 
-            else if ((!EnoughGrass) && !(Population[i][3]) && (pow(pow(100, -MaxAge), Population[i][2]) > rand() % 100)) {
-                CountHerb--;
-                Population.erase(Population.begin() + i);
-                if (i >= Population.size())
+            if ((!EnoughGrass) && !(Population[i][3])) {
+                float p = pow(99, pow(float(Population[i][2]) / float(Parameters["MaxAge"]), 3));
+                if (p > rand() % 100) {
+                    Parameters["CountHerb"]--;
+                    Population.erase(Population.begin() + i);
+                    if (i >= Population.size())
+                        UnDead = false;
                     break;
+                }
             }
 
-            else {
+            if (UnDead) {
                 Population[i][0] += rand() % 3 - 1;
                 if (Population[i][0] < 0)
                     Population[i][0] = 0;
-                if (Population[i][0] >= Xmax)
-                    Population[i][0] = Xmax - 1;
+                if (Population[i][0] >= Parameters["Xmax"])
+                    Population[i][0] = Parameters["Xmax"] - 1;
 
                 Population[i][1] += rand() % 3 - 1;
                 if (Population[i][1] < 0)
                     Population[i][1] = 0;
-                if (Population[i][1] >= Ymax)
-                    Population[i][1] = Ymax - 1;
+                if (Population[i][1] >= Parameters["Ymax"])
+                    Population[i][1] = Parameters["Ymax"] - 1;
 
 
 
@@ -155,7 +162,7 @@ void StartEmulation(vector <vector <int> > Population) {
                     int k = 0;
                     while (k < Population.size()) {
                         if ((abs(Population[i][0] - Population[k][0]) < 2) && (abs(Population[i][1] - Population[k][1]) < 2) && !(Population[k][3])) {
-                            CountHerb--;
+                            Parameters["CountHerb"]--;
                             Population.erase(Population.begin() + k);
                             if (i >= Population.size())
                                 break;
@@ -170,11 +177,19 @@ void StartEmulation(vector <vector <int> > Population) {
                     break;
             }
         }
-        ShowWork(Population);
-        Sleep(20);
-        Day++;
+        //ShowWork(Population);
+        //Sleep(10);
+        Parameters["Day"]++;
     }
 }
+
+// 0 - реализовать полный ввод параметров
+// 1 - реализовать размножение
+// 2 - переделать условие голодания хищников (добавить счетчик умерших)
+// 3 - реализовать катаклизмы
+
+// ... - реализовать все на QT
+
 
 int main() {
     SetConsoleCP(1251);
@@ -192,23 +207,61 @@ int main() {
             break;
         }
         case (49): {
+            Parameters["MinReprAge"] = 10;
+            Parameters["MaxReprAge"] = 30;
+            Parameters["AverageAge"] = 20;
+            Parameters["MaxAge"] = 50;
+            Parameters["Day"] = 0;
+            Parameters["MinFoodPred"] = 2;
+            Parameters["MinFoodHerb"] = 20;
+            Parameters["CountHerb"] = 3;
+            Parameters["CountPred"] = 1;
+            Parameters["GrassRecPerc"] = 67;
+            Parameters["Grass"] = 1000;
+            Parameters["CataclysmChance"] = 1;
+            Parameters["Xmax"] = 20;
+            Parameters["Ymax"] = 20;
+
+            Population = {
+                    {Parameters["Xmax"] / 4, Parameters["Ymax"] / 4, 20, 0},
+                    {Parameters["Xmax"] * 3 / 4, Parameters["Ymax"] / 4, 20, 0},
+                    {Parameters["Xmax"] / 4, Parameters["Ymax"] * 3 / 4, 20, 0},
+                    {Parameters["Xmax"] * 3 / 4, Parameters["Ymax"] * 3 / 4, 20, 1},
+            };
             ShowSettings();
             ShowParameters();
-            StartEmulation(Population); // нужно чтобы новый создавался!
+            StartEmulation(Population);
             break;
         }
         case (50): {
-            ShowSettings();
-            Population.clear();
-            int n = rand() % 16 + 4;
-            CountHerb = 0;
-            CountPred = 0;
-            for (int i = 0; i < n; i++) {
-                int type = rand() % 3 / 2; // соотношение хищников и травоядных
-                Population.push_back({ rand() % Xmax, rand() % Ymax, rand() % (2 * AverageAge), type });
-                if (type) CountPred++;
-                else CountHerb++;
+            int n = rand() % 17 + 4; // от 4 до 20
+
+            Parameters["MinReprAge"] = 10;
+            Parameters["MaxReprAge"] = 30;
+            Parameters["AverageAge"] = 20;
+            Parameters["MaxAge"] = 50;
+            Parameters["Day"] = 0;
+            Parameters["MinFoodPred"] = 2;
+            Parameters["MinFoodHerb"] = 20;
+            Parameters["CountHerb"] = 1;
+            Parameters["CountPred"] = 1;
+            Parameters["GrassRecPerc"] = 67;
+            Parameters["Grass"] = 1000;
+            Parameters["CataclysmChance"] = 1;
+            Parameters["Xmax"] = 20;
+            Parameters["Ymax"] = 20;
+
+            Population = { // минимум эмуляции
+                    { rand() % Parameters["Xmax"], rand() % Parameters["Ymax"], rand() % (2 * Parameters["AverageAge"]), 0 },
+                    { rand() % Parameters["Xmax"], rand() % Parameters["Ymax"], rand() % (2 * Parameters["AverageAge"]), 1 }
+            };
+            for (int i = 0; i < n - 2; i++) {
+                int type = rand() % 4 / 3; // соотношение хищников и травоядных 1 к 3
+                Population.push_back({ rand() % Parameters["Xmax"], rand() % Parameters["Ymax"], rand() % (2 * Parameters["AverageAge"]), type });
+                if (type) Parameters["CountPred"]++;
+                else Parameters["CountHerb"]++;
             }
+            ShowSettings();
             ShowParameters();
             StartEmulation(Population);
             break;
