@@ -64,11 +64,12 @@ void ShowParameters() {
     cout << "Размер поля: " << Parameters["Xmax"] << "x" << Parameters["Ymax"] << "\n"
         << "Минимальный репродуктивный возраст животных: " << Parameters["MinReprAge"] << "\n"
         << "Максимальный репродуктивный возраст животных: " << Parameters["MaxReprAge"] << "\n"
+        << "Максимальный возраст животных: " << Parameters["MaxAge"] << "%\n"
         << "Количество травоядных необходимое хищнику на месяц: " << Parameters["MinFoodPred"] << "\n"
         << "Количество травы необходимое травоядному на месяц: " << Parameters["MinFoodHerb"] << "\n"
+        << "Количество травы на поле: " << Parameters["Grass"] << "\n"
         << "Восстановление травы за год: " << Parameters["GrassRecPerc"] << "%\n"
         << "Шанс катаклизма: " << Parameters["CataclysmChance"] << "%\n"
-        << "Количество травы на поле: " << Parameters["Grass"] << "\n"
         << "Количество травоядных: " << Parameters["CountHerb"] << "\n"
         << "Количество хищников: " << Parameters["CountPred"] << "\n";
 }
@@ -99,10 +100,11 @@ void StartEmulation(vector <vector <int> > Population) {
             return;
         }
 
-        // завернуть в отдельную функцию
         if (!(Parameters["Day"] % 30)) {
             Parameters["Grass"] -= (Parameters["MinFoodHerb"] * Parameters["CountHerb"]);
             Parameters["Grass"] += (Parameters["MinFoodHerb"] * Parameters["CountHerb"]) * Parameters["GrassRecPerc"] / 100;
+            if (Parameters["Grass"] < 0)
+                Parameters["Grass"] = 0;
             if (Parameters["CountHerb"])
                 EnoughGrass = Parameters["Grass"] / (Parameters["MinFoodHerb"] * Parameters["CountHerb"]);
             ShowWork(Population);
@@ -183,12 +185,11 @@ void StartEmulation(vector <vector <int> > Population) {
     }
 }
 
-// 0 - реализовать полный ввод параметров
 // 1 - реализовать размножение
 // 2 - переделать условие голодания хищников (добавить счетчик умерших)
 // 3 - реализовать катаклизмы
 
-// ... - реализовать все на QT
+// ... - реализовать все на QT (=порваная жопа)
 
 
 int main() {
@@ -267,9 +268,59 @@ int main() {
             break;
         }
         case (51): {
-            system("cls");
             ShowSettings();
-            cout << "В разработке\n"; // надо доделать!
+            cout << "Задайте параметры\n\n";
+            cout << "Минимальный репродуктивный возраст животных: ";
+            cin >> Parameters["MinReprAge"];
+            cout << "Максимальный репродуктивный возраст животных: ";
+            cin >> Parameters["MaxReprAge"];
+            cout << "Максимальный возраст животных: ";
+            cin >> Parameters["MaxAge"];
+            cout << "Количество травоядных необходимое хищнику на месяц: ";
+            cin >> Parameters["MinFoodPred"];
+            cout << "Количество травы необходимое травоядному на месяц: ";
+            cin >> Parameters["MinFoodHerb"];
+            cout << "Количество травы на поле: ";
+            cin >> Parameters["Grass"];
+            cout << "Процент восстановления травы за год: ";
+            cin >> Parameters["GrassRecPerc"];
+            cout << "Шанс катаклизма: ";
+            cin >> Parameters["CataclysmChance"];
+            cout << "Ширина поля: ";
+            cin >> Parameters["Xmax"];
+            cout << "Высота поля: ";
+            cin >> Parameters["Ymax"];
+
+            cout << "Задайте животных в виде 'Xкоордината  Yкоордината  Возраст  Тип(0 травоядное; 1 хищник)'\n"
+                << "(Чтобы завершить ввод введите '-1')\n";
+            int X, Y, A, T;
+            while (1) {
+
+                cin >> X;
+                if (X == -1)
+                    break;
+                cin >> Y >> A >> T;
+
+                if ((abs(2 * X - Parameters["Xmax"]) - Parameters["Xmax"] <= 0)
+                    and (abs(2 * Y - Parameters["Ymax"]) - Parameters["Ymax"] <= 0)
+                    and (A >= 0)
+                    and (abs(2 * T - 1) - 1 <= 0)){
+                    Population.push_back({ X, Y, A, T });
+                    if (T)
+                        Parameters["CountPred"]++;
+                    else
+                        Parameters["CountHerb"]++;
+
+                }
+                else
+                    cout << "Введены неправильные параметры! Животное не добавлено на поле!\n";
+
+            }
+            
+            cout << "Все параметры эмуляции заданы\n"
+                << "Нажмите enter, чтобы начать эмуляцию";
+            if (_getch() == 13)
+                StartEmulation(Population);
             break;
         }
         }
