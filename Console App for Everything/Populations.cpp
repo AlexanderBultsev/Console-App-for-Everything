@@ -199,6 +199,7 @@ void StartEmulation(vector <vector <int> > Population) {
             }
 
             if (UnDead) {
+                // Передвижение животных
                 Population[i][0] += rand() % 3 - 1;
                 if (Population[i][0] < 0)
                     Population[i][0] = 0;
@@ -211,6 +212,7 @@ void StartEmulation(vector <vector <int> > Population) {
                 if (Population[i][1] >= Parameters["Ymax"])
                     Population[i][1] = Parameters["Ymax"] - 1;
 
+                // Охота хищников
                 if (Population[i][3]) {
                     int k = 0;
                     while (k < Population.size()) {
