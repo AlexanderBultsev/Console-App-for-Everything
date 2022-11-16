@@ -144,7 +144,7 @@ void StartEmulation(vector <vector <int> > Population) {
                 EnoughHerbs = DeadHerbsCount / (Parameters["MinFoodPred"] * Parameters["CountPred"]);
             DeadHerbsCount = 0;
             ShowWork(Population, OutputMode);
-            Sleep(500);
+            Sleep(200);
         }
 
         if (!(Parameters["Day"] % 360)) {
@@ -325,28 +325,110 @@ int main() {
             break;
         }
         case (51): {
-            ShowSettings();
+            system("cls");
             cout << "Задайте параметры\n\n";
+            int inp;
+
             cout << "Минимальный репродуктивный возраст животных: ";
-            cin >> Parameters["MinReprAge"];
+            cin >> inp; 
+            if (inp > 0) Parameters["MinReprAge"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
             cout << "Максимальный репродуктивный возраст животных: ";
-            cin >> Parameters["MaxReprAge"];
-            cout << "Вероятность размножения: ";
-            cin >> Parameters["BirthProbability"];
+            cin >> inp;
+            if (inp > 0) Parameters["MaxReprAge"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
+            cout << "Вероятность размножения (Отношение плодовитости к количеству дней в году, выраженное в процентах): ";
+            cin >> inp;
+            if (inp > 0) Parameters["BirthProbability"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
             cout << "Максимальный возраст животных: ";
-            cin >> Parameters["MaxAge"];
+            cin >> inp;
+            if (inp > 0) Parameters["MaxAge"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
             cout << "Количество травоядных необходимое хищнику на месяц: ";
-            cin >> Parameters["MinFoodPred"];
+            cin >> inp;
+            if (inp > 0) Parameters["MinFoodPred"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
             cout << "Количество травы необходимое травоядному на месяц: ";
-            cin >> Parameters["MinFoodHerb"];
+            cin >> inp;
+            if (inp > 0) Parameters["MinFoodHerb"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
             cout << "Количество травы на поле: ";
-            cin >> Parameters["Grass"];
+            cin >> inp;
+            if (inp > 0) Parameters["Grass"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
             cout << "Процент восстановления травы за год: ";
-            cin >> Parameters["GrassRec"];
+            cin >> inp;
+            if (inp > 0) Parameters["GrassRec"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
             cout << "Ширина поля: ";
-            cin >> Parameters["Xmax"];
+            cin >> inp;
+            if (inp > 0) Parameters["Xmax"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
             cout << "Высота поля: ";
-            cin >> Parameters["Ymax"];
+            cin >> inp;
+            if (inp > 0) Parameters["Ymax"] = inp;
+            else {
+                cout << "Параметр задан неверно\nВвод остановлен\n";
+                cout << "Нажмите любую кнопку для перехода к настройкам\n";
+                int _ = _getch();
+                ShowSettings();
+                break;
+            }
 
             cout << "Задайте животных в виде 'Xкоордината  Yкоордината  Возраст  Тип(0 травоядное; 1 хищник)'\n"
                 << "(Чтобы завершить ввод введите '-1')\n";
